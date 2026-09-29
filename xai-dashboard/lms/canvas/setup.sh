@@ -15,6 +15,7 @@ if [ -n "$CANVAS_CONTAINER" ]; then
     "a=Account.default; a.allow_sis_import=true; a.save!"' >/dev/null 2>&1
 fi
 
+if [ -z "$CANVAS_SKIP_SIS" ]; then     # set CANVAS_SKIP_SIS=1 to only (re)add the dashboard modules
 (cd "$OUT" && rm -f ../canvas_sis.zip && zip -q ../canvas_sis.zip terms.csv courses.csv users.csv enrollments.csv)
 curl -sf -H "$AUTH" -F attachment=@"$OUT/../canvas_sis.zip" -F import_type=instructure_csv \
      "$CANVAS_URL/api/v1/accounts/1/sis_imports" > /tmp/sis.json
@@ -24,6 +25,7 @@ while :; do
   STATE=$(curl -sf -H "$AUTH" "$CANVAS_URL/api/v1/accounts/1/sis_imports/$ID" | python3 -c "import sys,json;d=json.load(sys.stdin);print(d['workflow_state'],d.get('progress'))")
   echo "  $STATE"; case "$STATE" in imported*|failed*) break;; esac; sleep 5
 done
+fi
 
 # Resolve Canvas course ids by course code (sis_course_id lookups can fail while an import runs).
 curl -sf -H "$AUTH" "$CANVAS_URL/api/v1/accounts/1/courses?per_page=100" \
