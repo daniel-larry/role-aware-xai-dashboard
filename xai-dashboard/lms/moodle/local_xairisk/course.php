@@ -71,7 +71,7 @@ foreach (array_slice($list['students'], 0, 300) as $s) {
 }
 
 $left = view::stats([get_string('students', 'local_xairisk') => $list['n'], get_string('flagged', 'local_xairisk') . ' (≥ 0.5)' => $list['n_flagged']])
-    . html_writer::div(html_writer::table($table), 'xai-scroll');
+    . html_writer::div(html_writer::div(html_writer::table($table), 'xai-x'), 'xai-scroll');
 
 if ($exp) {
     $st = $exp['student'];

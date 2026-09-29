@@ -54,9 +54,9 @@ foreach ($d['comparison'] as $k => $m) {
     $cmp->data[] = [s($k) . ($k === 'XGBoost' ? ' (in use)' : ''), $f($m['accuracy']), $f($m['precision']), $f($m['recall']), $f($m['f1'])];
 }
 
-$left = html_writer::tag('h4', 'Performance by course presentation') . html_writer::table($per)
-    . html_writer::tag('h4', 'Confusion matrix (threshold 0.5)') . html_writer::table($cm)
-    . html_writer::tag('h4', 'Model comparison') . html_writer::table($cmp);
+$left = html_writer::tag('h4', 'Performance by course presentation') . html_writer::div(html_writer::table($per), 'xai-x')
+    . html_writer::tag('h4', 'Confusion matrix (threshold 0.5)') . html_writer::div(html_writer::table($cm), 'xai-x')
+    . html_writer::tag('h4', 'Model comparison') . html_writer::div(html_writer::table($cmp), 'xai-x');
 $right = view::trail('Full-population reasoning trail', 'Mean absolute SHAP value; colour shows the usual direction',
         $d['global_trail'], 'mean_abs_shap', false)
     . view::note(get_string('popcaveat', 'local_xairisk'));

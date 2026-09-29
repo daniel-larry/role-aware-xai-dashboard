@@ -35,3 +35,8 @@
 .xai-mbar { background: #eef0f4; height: 8px; border-radius: 4px; overflow: hidden; }
 .xai-mbar span { display: block; height: 100%; background: #2f5d9e; }
 .xai-filter { margin-bottom: 8px; }
+/* Boost caps the main column at 830px; the two-panel views need more room (plugin pages only). */
+body.path-local-xairisk #page.drawers #topofscroll.main-inner,
+body.path-local-xairisk .header-maxwidth { max-width: min(1400px, 100%); }
+.xai-x { overflow-x: auto; }
+.xai-table.generaltable th, .xai-table.generaltable td { padding: .35rem .6rem; }

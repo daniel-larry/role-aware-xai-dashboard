@@ -57,7 +57,7 @@ foreach ($d['students'] as $s) {
 }
 
 $left = view::stats(['students at or above ' . $d['watch_threshold'] => $d['n'], 'modules' => count($d['by_module'])])
-    . html_writer::div($mods, 'xai-modules') . html_writer::tag('h4', 'Highest-risk students') . html_writer::table($table);
+    . html_writer::div($mods, 'xai-modules') . html_writer::tag('h4', 'Highest-risk students') . html_writer::div(html_writer::table($table), 'xai-x');
 $right = view::trail('Caseload reasoning trail', 'Mean SHAP contribution across the caseload (log-odds)', $d['trail'])
     . view::note(get_string('cohortcaveat', 'local_xairisk'));
 
