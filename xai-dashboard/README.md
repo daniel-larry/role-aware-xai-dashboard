@@ -45,6 +45,11 @@ The student upload into Moodle takes roughly 30 minutes and the Canvas SIS impor
 can be re-run safely. Behind a TLS-intercepting proxy, build the API image with
 `docker build --secret id=ca,src=<ca-bundle.crt> -f docker/Dockerfile.api -t xai-dashboard-api .`
 
+If the machine restarts while Canvas is running, its web server may refuse to start because of a
+stale pid file; fix with
+`docker exec xai-dashboard-canvas-1 bash -c 'rm -f /opt/canvas/canvas-lms/tmp/pids/server.pid && supervisorctl restart canvas_web'`.
+An interrupted SIS import is marked failed; re-run `lms/canvas/setup.sh` to resume it.
+
 Accounts after setup (passwords from `.env`):
 
 | System | Username | Role | Sees |
