@@ -73,6 +73,11 @@ class Explainer:
         return [{'feature': self.names[j], 'value': float(self.Xt[i, j]), 'contribution': float(v[j])} for j in order]
 
     def local_lime(self, i, k=5, num_samples=1000):
+        # Reset the sampler so the same student always gets the same explanation.
+        rs = np.random.RandomState(SEED)
+        self.lime.random_state = self.lime.base.random_state = rs
+        if self.lime.discretizer is not None:
+            self.lime.discretizer.random_state = rs
         exp = self.lime.explain_instance(self.Xt[i], self.model.predict_proba, num_features=k,
                                          num_samples=num_samples, labels=(1,))
         return [{'condition': cond, 'contribution': float(w)} for cond, w in exp.as_list(label=1)]
