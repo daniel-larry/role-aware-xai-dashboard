@@ -3,6 +3,7 @@
 #         docker compose --profile canvas up -d                    (adds Canvas)
 services:
   api:
+    image: xai-dashboard-api
     build: { context: ., dockerfile: docker/Dockerfile.api }
     environment:
       SERVICE_KEY: ${SERVICE_KEY}
@@ -36,7 +37,7 @@ services:
       MOODLE_EMAIL: admin@oulad.invalid
       SERVICE_KEY: ${SERVICE_KEY}
     volumes:
-      - ./lms/moodle/local_xairisk:/var/www/html/local/xairisk:ro
+      - ./lms/moodle/local_xairisk:/var/www/html/public/local/xairisk:ro
       - ./lms/sync/out/moodle:/import:ro
       - ./lms/moodle/scripts:/scripts:ro
       - moodledata:/var/www/moodledata

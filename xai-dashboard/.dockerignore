@@ -1,0 +1,6 @@
+web/node_modules
+web/dist
+artifacts
+lms
+.env
+**/__pycache__

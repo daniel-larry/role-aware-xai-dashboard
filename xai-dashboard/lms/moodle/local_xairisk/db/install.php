@@ -6,6 +6,8 @@ defined('MOODLE_INTERNAL') || die();
  */
 function xmldb_local_xairisk_install() {
     global $DB;
+    // Moodle registers db/access.php only after this hook runs, so register it now.
+    update_capabilities('local_xairisk');
     if (!$DB->record_exists('role', ['shortname' => 'xairiskadvisor'])) {
         $roleid = create_role('Academic advisor', 'xairiskadvisor',
             'Advisor role for the role-aware XAI at-risk dashboard (caseload view).');
