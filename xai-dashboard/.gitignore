@@ -1,0 +1,6 @@
+web/node_modules/
+web/dist/
+artifacts/*
+!artifacts/manifest.json
+!artifacts/feature_dictionary.json
+__pycache__/

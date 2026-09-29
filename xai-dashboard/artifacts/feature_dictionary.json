@@ -1,0 +1,129 @@
+{
+ "version": "1.0",
+ "numeric": [
+  "num_of_prev_attempts",
+  "studied_credits",
+  "date_registration",
+  "withdrew_before_start",
+  "module_presentation_length",
+  "n_assessments_submitted",
+  "mean_score",
+  "min_score",
+  "mean_days_late",
+  "n_late_submissions",
+  "n_banked",
+  "clicks_7d_before_deadline",
+  "clicks_14d_before_deadline",
+  "clicks_28d_before_deadline",
+  "total_clicks",
+  "active_days",
+  "mean_daily_clicks"
+ ],
+ "categorical": [
+  "code_module",
+  "gender",
+  "region",
+  "highest_education",
+  "imd_band",
+  "age_band",
+  "disability"
+ ],
+ "features": {
+  "num_of_prev_attempts": {
+   "label": "Previous attempts",
+   "description": "Number of previous attempts at this module"
+  },
+  "studied_credits": {
+   "label": "Credits studied",
+   "description": "Total credits of the modules the student is studying"
+  },
+  "date_registration": {
+   "label": "Registration timing",
+   "description": "Registration day relative to the module start"
+  },
+  "withdrew_before_start": {
+   "label": "Withdrew before start",
+   "description": "Unregistered on or before the module start day"
+  },
+  "module_presentation_length": {
+   "label": "Presentation length",
+   "description": "Length of the module presentation in days"
+  },
+  "n_assessments_submitted": {
+   "label": "Assessments submitted",
+   "description": "Number of assessments submitted"
+  },
+  "mean_score": {
+   "label": "Mean assessment score",
+   "description": "Mean score of submitted assessments"
+  },
+  "min_score": {
+   "label": "Lowest assessment score",
+   "description": "Lowest score of submitted assessments"
+  },
+  "mean_days_late": {
+   "label": "Mean days late",
+   "description": "Mean days submitted after the deadline (0 if on time)"
+  },
+  "n_late_submissions": {
+   "label": "Late submissions",
+   "description": "Number of submissions after the deadline"
+  },
+  "n_banked": {
+   "label": "Banked results",
+   "description": "Assessment results carried over from a previous presentation"
+  },
+  "clicks_7d_before_deadline": {
+   "label": "Clicks, 7 days before deadlines",
+   "description": "VLE clicks in the 7 days before each deadline"
+  },
+  "clicks_14d_before_deadline": {
+   "label": "Clicks, 14 days before deadlines",
+   "description": "VLE clicks in the 14 days before each deadline"
+  },
+  "clicks_28d_before_deadline": {
+   "label": "Clicks, 28 days before deadlines",
+   "description": "VLE clicks in the 28 days before each deadline"
+  },
+  "total_clicks": {
+   "label": "Total VLE clicks",
+   "description": "Total clicks in the virtual learning environment"
+  },
+  "active_days": {
+   "label": "Active days",
+   "description": "Number of days with any VLE activity"
+  },
+  "mean_daily_clicks": {
+   "label": "Mean clicks per active day",
+   "description": "Total clicks divided by active days"
+  },
+  "code_module": {
+   "label": "Module",
+   "description": "Module code"
+  },
+  "gender": {
+   "label": "Gender",
+   "description": "Gender"
+  },
+  "region": {
+   "label": "Region",
+   "description": "Geographic region"
+  },
+  "highest_education": {
+   "label": "Highest prior education",
+   "description": "Highest prior education"
+  },
+  "imd_band": {
+   "label": "IMD band",
+   "description": "Index of multiple deprivation band"
+  },
+  "age_band": {
+   "label": "Age band",
+   "description": "Age band"
+  },
+  "disability": {
+   "label": "Disability",
+   "description": "Declared disability"
+  }
+ }
+}
