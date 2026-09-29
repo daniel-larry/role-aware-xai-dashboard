@@ -1,12 +1,19 @@
 #!/bin/sh
 # Load all OULAD courses, students and enrolments into Canvas (SIS import) and add the dashboard
 # to every course as an External URL module item (iframe, no LTI).
-#   CANVAS_URL=http://localhost:3000 CANVAS_TOKEN=<admin API token> sh lms/canvas/setup.sh
+#   CANVAS_URL=http://localhost:3000 CANVAS_TOKEN=<admin API token> [CANVAS_CONTAINER=xai-dashboard-canvas-1] sh lms/canvas/setup.sh
 set -e
 : "${CANVAS_URL:?}" "${CANVAS_TOKEN:?}"
 DASHBOARD_URL=${DASHBOARD_URL:-http://localhost:8000/}
 OUT=$(dirname "$0")/../sync/out/canvas
 AUTH="Authorization: Bearer $CANVAS_TOKEN"
+
+# The local canvas-docker image ships with SIS imports switched off and the API cannot enable them.
+# Set CANVAS_CONTAINER (e.g. xai-dashboard-canvas-1) to switch them on; hosted Canvas usually has them on.
+if [ -n "$CANVAS_CONTAINER" ]; then
+  docker exec "$CANVAS_CONTAINER" bash -lc 'cd /opt/canvas/canvas-lms && $GEM_HOME/bin/bundle exec rails runner \
+    "a=Account.default; a.allow_sis_import=true; a.save!"' >/dev/null 2>&1
+fi
 
 (cd "$OUT" && rm -f ../canvas_sis.zip && zip -q ../canvas_sis.zip terms.csv courses.csv users.csv enrollments.csv)
 curl -sf -H "$AUTH" -F attachment=@"$OUT/../canvas_sis.zip" -F import_type=instructure_csv \
