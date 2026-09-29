@@ -89,7 +89,7 @@ export default function InstructorView({ token, onExpired }) {
               {loading && <div className="muted">Computing SHAP and LIME explanations…</div>}
               {exp && (
                 <>
-                  <div className="stack">
+                  <div className="pair">
                     <ReasoningTrail title="SHAP" subtitle="Top 5 contributions (log-odds)" items={exp.shap} />
                     <ReasoningTrail title="LIME" subtitle="Top 5 local surrogate weights" items={exp.lime} />
                   </div>

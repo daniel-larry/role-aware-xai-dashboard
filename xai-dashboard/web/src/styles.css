@@ -66,3 +66,9 @@ tbody tr { cursor: default; } .table-wrap tbody tr:hover { background: #f3f6fb; 
 @media (max-width: 900px) { .grid-2.instructor { grid-template-columns: 1fr; } }
 .stack { display: flex; flex-direction: column; gap: 18px; margin-top: 10px; }
 .stack .trail li { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) 56px; }
+/* Instructor view: SHAP and LIME side by side so agreement is visible at a glance. */
+.grid-2.instructor { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.pair .trail li { grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) 46px; }
+.pair .trail-label { white-space: normal; line-height: 1.25; }
+@media (max-width: 1100px) { .pair { grid-template-columns: 1fr; } }
