@@ -7,6 +7,7 @@ controlled by the FRAME_ANCESTORS environment variable.
 """
 import datetime
 import functools
+import hmac
 import json
 import os
 import sys
@@ -23,6 +24,7 @@ ART = os.environ.get('ARTIFACTS_DIR', os.path.join(os.path.dirname(__file__), '.
 STATIC = os.environ.get('STATIC_DIR', os.path.join(os.path.dirname(__file__), '..', 'web', 'dist'))
 SECRET = os.environ.get('JWT_SECRET', 'change-me-in-production')
 WATCH_THRESHOLD = float(os.environ.get('WATCH_THRESHOLD', '0.5'))
+SERVICE_KEY = os.environ.get('SERVICE_KEY', '')  # shared secret for LMS plugins (server-to-server)
 FRAME_ANCESTORS = os.environ.get('FRAME_ANCESTORS', "'self' http://localhost:* http://127.0.0.1:*")
 
 USERS = {  # demonstration accounts, one per role; passwords stored as salted hashes
@@ -74,6 +76,16 @@ def require(*roles):
     def deco(fn):
         @functools.wraps(fn)
         def wrapper(*a, **kw):
+            key = request.headers.get('X-Service-Key', '')
+            if key:
+                # LMS plugin mode: the LMS has already authenticated the user and resolved their role.
+                if not SERVICE_KEY or not hmac.compare_digest(key, SERVICE_KEY):
+                    abort(401)
+                role = request.headers.get('X-Acting-Role', '')
+                if role not in roles:
+                    abort(403)
+                g.user = {'role': role, 'name': request.headers.get('X-Acting-User', 'LMS user'), 'via': 'service'}
+                return fn(*a, **kw)
             auth = request.headers.get('Authorization', '')
             if not auth.startswith('Bearer '):
                 abort(401)
@@ -118,7 +130,8 @@ def student_rows(idx):
     rows = []
     for i in idx:
         r = FT.iloc[i]
-        rows.append({'key': KEY[i], 'id_student': int(r['id_student']), 'code_module': r['code_module'],
+        rows.append({'key': KEY[i], 'id_student': int(r['id_student']), 'lms_username': f"s{int(r['id_student'])}",
+                     'course_shortname': f"{r['code_module']}-{r['code_presentation']}", 'code_module': r['code_module'],
                      'code_presentation': r['code_presentation'], 'probability': float(E.prob[i]),
                      'flagged': bool(E.prob[i] >= MANIFEST['threshold']),
                      'n_assessments_submitted': int(r['n_assessments_submitted']),

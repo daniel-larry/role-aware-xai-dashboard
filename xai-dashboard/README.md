@@ -26,3 +26,20 @@ Allowed embedding origins for LMS iframes are set with `FRAME_ANCESTORS`.
 
 `artifacts/manifest.json` records the model version, configuration, library versions and
 out-of-fold metrics of the committed run.
+
+## Run everything in Docker (API + Moodle plugin + Canvas iframe)
+
+```bash
+cp .env.example .env            # set real secrets
+python lms/sync/make_import_files.py /path/to/oulad lms/sync/out   # 22 courses, 28,785 students, 32,593 enrolments
+docker compose up -d            # api on :8000, Moodle on :8080 (first start trains the model)
+docker compose exec moodle sh /scripts/setup.sh    # plugin, courses, users, enrolments, roles
+docker compose --profile canvas up -d               # Canvas on :3000 (optional)
+CANVAS_URL=http://localhost:3000 CANVAS_TOKEN=... sh lms/canvas/setup.sh
+```
+
+In Moodle, teachers see **At-risk insights** in each OULAD course (course short names such as
+`FFF-2014J`); the `advisor` account has the *Academic advisor* system role and sees
+**Advisor caseload**; managers see **Institution overview**. Moodle handles login and roles and
+calls the API server-to-server with `SERVICE_KEY`. In Canvas every course gets an
+*At-risk insights* module whose External URL item embeds the dashboard (no LTI).

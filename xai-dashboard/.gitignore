@@ -4,3 +4,5 @@ artifacts/*
 !artifacts/manifest.json
 !artifacts/feature_dictionary.json
 __pycache__/
+lms/sync/out/
+.env

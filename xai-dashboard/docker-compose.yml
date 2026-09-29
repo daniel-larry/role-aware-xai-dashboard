@@ -1,0 +1,53 @@
+# Role-aware XAI dashboard: API + dashboard, Moodle (native plugin) and Canvas (External URL iframe).
+# Usage:  cp .env.example .env && docker compose up -d            (API + Moodle)
+#         docker compose --profile canvas up -d                    (adds Canvas)
+services:
+  api:
+    build: { context: ., dockerfile: docker/Dockerfile.api }
+    environment:
+      SERVICE_KEY: ${SERVICE_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      INSTRUCTOR_PASSWORD: ${DASHBOARD_PASSWORD}
+      ADVISOR_PASSWORD: ${DASHBOARD_PASSWORD}
+      ADMIN_PASSWORD: ${DASHBOARD_PASSWORD}
+      FRAME_ANCESTORS: "'self' http://localhost:8080 http://localhost:3000"
+    volumes:
+      - ../oulad-dataset.zip:/data/oulad-dataset.zip:ro
+      - artifacts:/app/artifacts
+    ports: ["8000:8000"]
+
+  moodle-db:
+    image: postgres:16-alpine
+    environment: { POSTGRES_DB: moodle, POSTGRES_USER: moodle, POSTGRES_PASSWORD: "${MOODLE_DB_PASSWORD}" }
+    volumes: [moodle-db:/var/lib/postgresql/data]
+
+  moodle:
+    image: erseco/alpine-moodle
+    depends_on: [moodle-db, api]
+    environment:
+      DB_TYPE: pgsql
+      DB_HOST: moodle-db
+      DB_NAME: moodle
+      DB_USER: moodle
+      DB_PASS: "${MOODLE_DB_PASSWORD}"
+      SITE_URL: http://localhost:8080
+      MOODLE_USERNAME: admin
+      MOODLE_PASSWORD: "${MOODLE_ADMIN_PASSWORD}"
+      MOODLE_EMAIL: admin@oulad.invalid
+      SERVICE_KEY: ${SERVICE_KEY}
+    volumes:
+      - ./lms/moodle/local_xairisk:/var/www/html/local/xairisk:ro
+      - ./lms/sync/out/moodle:/import:ro
+      - ./lms/moodle/scripts:/scripts:ro
+      - moodledata:/var/www/moodledata
+    ports: ["8080:8080"]
+
+  canvas:
+    image: lbjay/canvas-docker
+    profiles: [canvas]
+    ports: ["3000:3000"]
+
+volumes:
+  artifacts:
+  moodle-db:
+  moodledata:
