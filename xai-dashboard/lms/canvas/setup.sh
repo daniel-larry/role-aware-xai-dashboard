@@ -25,14 +25,24 @@ while :; do
   echo "  $STATE"; case "$STATE" in imported*|failed*) break;; esac; sleep 5
 done
 
+# Resolve Canvas course ids by course code (sis_course_id lookups can fail while an import runs).
+curl -sf -H "$AUTH" "$CANVAS_URL/api/v1/accounts/1/courses?per_page=100" \
+  | python3 -c "import sys,json;[print(c['course_code'],c['id']) for c in json.load(sys.stdin)]" > /tmp/canvas_courses.txt
 for SIS in $(tail -n +2 "$OUT/courses.csv" | cut -d, -f1); do
-  CID="sis_course_id:$SIS"
+  CID=$(awk -v c="$SIS" '$1==c{print $2}' /tmp/canvas_courses.txt)
+  [ -n "$CID" ] || { echo "  $SIS not found in Canvas"; continue; }
+  if curl -sf -H "$AUTH" "$CANVAS_URL/api/v1/courses/$CID/modules?per_page=100" | grep -q '"name":"At-risk insights"'; then
+    echo "  $SIS already has the dashboard"; continue
+  fi
   MID=$(curl -sf -H "$AUTH" -X POST "$CANVAS_URL/api/v1/courses/$CID/modules" -d "module[name]=At-risk insights" \
         | python3 -c "import sys,json;print(json.load(sys.stdin)['id'])")
-  curl -sf -H "$AUTH" -X POST "$CANVAS_URL/api/v1/courses/$CID/modules/$MID/items" \
+  IID=$(curl -sf -H "$AUTH" -X POST "$CANVAS_URL/api/v1/courses/$CID/modules/$MID/items" \
        -d "module_item[type]=ExternalUrl" -d "module_item[title]=At-risk insights dashboard" \
-       -d "module_item[external_url]=${DASHBOARD_URL}?course=$SIS" -d "module_item[new_tab]=false" >/dev/null
+       -d "module_item[external_url]=${DASHBOARD_URL}?course=$SIS" -d "module_item[new_tab]=false" \
+        | python3 -c "import sys,json;print(json.load(sys.stdin)['id'])")
+  curl -sf -H "$AUTH" -X PUT "$CANVAS_URL/api/v1/courses/$CID/modules/$MID/items/$IID" -d "module_item[published]=true" >/dev/null
   curl -sf -H "$AUTH" -X PUT "$CANVAS_URL/api/v1/courses/$CID/modules/$MID" -d "module[published]=true" >/dev/null
+  curl -sf -H "$AUTH" -X PUT "$CANVAS_URL/api/v1/courses/$CID" -d "offer=true" >/dev/null
   echo "  dashboard added to $SIS"
 done
 echo "Canvas setup complete."
