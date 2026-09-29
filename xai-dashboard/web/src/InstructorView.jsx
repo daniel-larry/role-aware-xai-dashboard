@@ -18,8 +18,10 @@ export default function InstructorView({ token, onExpired }) {
   useEffect(() => {
     get('/api/meta', token).then((m) => {
       setMeta(m)
-      const first = m.module_presentations[0]
-      setCourse(`${first.code_module}|${first.code_presentation}`)
+      // An LMS embed can preselect its course with ?course=FFF-2014J.
+      const want = (new URLSearchParams(window.location.search).get('course') || '').replace('-', '|')
+      const all = m.module_presentations.map((x) => `${x.code_module}|${x.code_presentation}`)
+      setCourse(all.includes(want) ? want : all[0])
     }).catch(fail)
   }, [])
 

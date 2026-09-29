@@ -24,7 +24,7 @@ for SIS in $(tail -n +2 "$OUT/courses.csv" | cut -d, -f1); do
         | python3 -c "import sys,json;print(json.load(sys.stdin)['id'])")
   curl -sf -H "$AUTH" -X POST "$CANVAS_URL/api/v1/courses/$CID/modules/$MID/items" \
        -d "module_item[type]=ExternalUrl" -d "module_item[title]=At-risk insights dashboard" \
-       -d "module_item[external_url]=$DASHBOARD_URL" -d "module_item[new_tab]=false" >/dev/null
+       -d "module_item[external_url]=${DASHBOARD_URL}?course=$SIS" -d "module_item[new_tab]=false" >/dev/null
   curl -sf -H "$AUTH" -X PUT "$CANVAS_URL/api/v1/courses/$CID/modules/$MID" -d "module[published]=true" >/dev/null
   echo "  dashboard added to $SIS"
 done
