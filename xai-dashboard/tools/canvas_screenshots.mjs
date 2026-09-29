@@ -20,8 +20,8 @@ if (await terms.isVisible().catch(() => false)) {
   await page.click('button:has-text("Submit")')
   await page.waitForLoadState('networkidle')
 }
-// The 2017 image does not recognise current browsers; hide its warning banner.
-const hideBanner = () => page.addStyleTag({ content: '.ic-flash-warning, #flash_message_holder { display: none !important; }' })
+// Hide the 2017 image's browser-support banner and its notice shown for any http:// embed (local demo only).
+const hideBanner = () => page.addStyleTag({ content: '.ic-flash-warning, #flash_message_holder, #insecure_content_msg { display: none !important; }' })
 
 // Find the Canvas course by its code, then open its "At-risk insights" module item.
 // Cookie-authenticated Canvas API responses start with "while(1);".
