@@ -5,5 +5,4 @@ artifacts/*
 !artifacts/feature_dictionary.json
 __pycache__/
 lms/sync/out/
-.env
 docker-compose.override.yml
