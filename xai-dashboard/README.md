@@ -3,6 +3,9 @@
 Predicts at-risk students on OULAD with XGBoost and explains predictions with SHAP and LIME,
 delivered through three role-gated views (instructor, advisor, administrator).
 
+For a step-by-step guide to starting everything with Docker, see the [main README](../README.md).
+This file is the technical reference.
+
 ## Run locally
 
 ```bash
@@ -32,7 +35,7 @@ out-of-fold metrics of the committed run.
 Tested on Moodle 5.2.3 (`erseco/alpine-moodle`) and `lbjay/canvas-docker`.
 
 ```bash
-cp .env.example .env            # set real secrets
+# .env is committed with test-only values; replace them before any real deployment
 python lms/sync/make_import_files.py /path/to/oulad lms/sync/out   # 22 courses, 28,785 students, 32,593 enrolments
 docker compose up -d            # api on :8000, Moodle on :8080 (first start trains the model, ~5 min)
 docker compose exec moodle sh /scripts/setup.sh    # plugin config, categories, courses, users, enrolments, roles
