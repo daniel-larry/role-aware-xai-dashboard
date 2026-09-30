@@ -11,8 +11,6 @@ and inside Canvas as an embedded course page.
 
 - [Thesis_2_revised.docx](Thesis_2_revised.docx): the full thesis (Word)
 - [Thesis_2_revised_preview.pdf](Thesis_2_revised_preview.pdf): a PDF copy for reading in the browser
-- [Thesis_2_REVISION_NOTES.md](Thesis_2_REVISION_NOTES.md): what changed in response to each
-  supervisor comment
 
 Chapter 4 of the thesis describes how the prototype was built. Chapter 5 reports the results.
 
